@@ -11,19 +11,17 @@ const TodoItem = ({
 }) => {
   const { id, title, isCompleted } = todoItem;
   const [editedValue, setEditedValue] = useState(title);
-  const handleEditStart = (todoId) => {
+  const handleEditStart = () => {
     setEditedValue(title);
-    handleEditTodo(todoId);
+    handleEditTodo(id);
   }
-  const isEditing = (id) => {
-    return editingTodoId === id;
-  };
+  const isEditing = editingTodoId === id;
   const handleEditedValue = (value) => {
     setEditedValue(value);
   };
   return (
     <div className={styles["todo__todoItem"]}>
-      {!isEditing(id) && (
+      {!isEditing && (
         <input
           type="checkbox"
           checked={isCompleted}
@@ -31,7 +29,7 @@ const TodoItem = ({
           onChange={() => handleCheckboxClick(id)}
         />
       )}
-      {isEditing(id) ? (
+      {isEditing ? (
         <input
           className={styles["todo__input-field"]}
           value={editedValue}
@@ -39,11 +37,11 @@ const TodoItem = ({
           onKeyDown={(e) => e.key === 'Enter' && handleSaveTodo(id , e.target.value)}
         />
       ) : (
-        <p className={`${isCompleted ? styles["todo--title-completed"] : ""}`} onDoubleClick={(e)=> handleEditStart(id)}>
+        <p className={`${isCompleted ? styles["todo--title-completed"] : ""}`} onDoubleClick={handleEditStart}>
           {title}
         </p>
       )}
-      {isEditing(id) ? (
+      {isEditing ? (
         <button
           className={styles["todo__editBtn"]}
           onClick={() => {
@@ -55,13 +53,12 @@ const TodoItem = ({
       ) : (
         <button
           className={styles["todo__editBtn"]}
-          onClick={() => handleEditStart(id)}
+          onClick={handleEditStart}
         >
           Edit
         </button>
       )}
-
-      {isEditing(id) ? (
+      {isEditing ? (
         <button
           className={styles["todo--deleteBtn"]}
           onClick={() => {
