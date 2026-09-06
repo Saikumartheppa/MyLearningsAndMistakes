@@ -20,8 +20,8 @@ const TodoItem = ({
   return (
     <div className={styles["todo__todoItem"]}>
       {!isEditing(id) && (
-        <input
-          type="checkBox"
+        <inputß
+          type="checkbox"
           checked={isCompleted}
           className={styles["todo__checkBox"]}
           onChange={() => handleCheckboxClick(id)}

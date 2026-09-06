@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import { TodoInput, TodoList, TodoFilters } from "../todo";
 import styles from "./style.module.scss";
 const Todo = () => {
@@ -34,12 +34,13 @@ const Todo = () => {
     setTodoInputField("");
   };
   const handleCheckboxClick = (toBeCompletedTodoId) => {
-    const updatedList = todoList.map((todo) => {
-      return todo.id === toBeCompletedTodoId
-        ? { ...todo, isCompleted: !todo.isCompleted }
-        : todo;
-    });
-    setTodoList(updatedList);
+    setTodoList((prevList) =>
+      prevList.map((todo) =>
+        todo.id === toBeCompletedTodoId
+          ? { ...todo, isCompleted: !todo.isCompleted }
+          : todo,
+      ),
+    );
   };
   const handleDeleteTodo = (toBeDeletedTodoId) => {
     const updatedTodoList = todoList.filter(
