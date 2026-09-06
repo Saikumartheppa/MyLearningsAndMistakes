@@ -33,20 +33,15 @@ const Todo = () => {
     setTodoList((prev) => [...prev, todoItem]);
     setTodoInputField("");
   };
-  const handleCheckboxClick = (toBeCompletedTodoId) => {
+  const handleCheckboxClick = (todoId) => {
     setTodoList((prevList) =>
       prevList.map((todo) =>
-        todo.id === toBeCompletedTodoId
-          ? { ...todo, isCompleted: !todo.isCompleted }
-          : todo,
+        todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo,
       ),
     );
   };
-  const handleDeleteTodo = (toBeDeletedTodoId) => {
-    const updatedTodoList = todoList.filter(
-      (todo) => todo.id !== toBeDeletedTodoId,
-    );
-    setTodoList(updatedTodoList);
+  const handleDeleteTodo = (todoId) => {
+    setTodoList((prevList) => prevList.filter((todo) => todo.id !== todoId));
   };
   const handleEditTodo = (toBeEditedTodoId) => {
     setEditingTodoId(toBeEditedTodoId);
@@ -54,15 +49,16 @@ const Todo = () => {
   const handleCancelTodo = () => {
     setEditingTodoId(null);
   };
-  const handleSaveTodo = (toBeSavedTodoId, EditedValue) => {
+  const handleSaveTodo = (todoId, EditedValue) => {
     const trimmedValue = EditedValue.trim();
     if (!trimmedValue) {
       return;
     }
-    const updatedTodoList = todoList.map((todo) =>
-      todo.id === toBeSavedTodoId ? { ...todo, title: trimmedValue } : todo,
+    setTodoList((prevList) =>
+      prevList.map((todo) =>
+        todo.id === todoId ? { ...todo, title: trimmedValue } : todo,
+      ),
     );
-    setTodoList(updatedTodoList);
     setEditingTodoId(null);
   };
   const fetchNumberOfActiveTodos = () => {
