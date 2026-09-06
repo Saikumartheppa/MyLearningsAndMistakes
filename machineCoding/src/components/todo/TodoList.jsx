@@ -11,6 +11,10 @@ const TodoItem = ({
 }) => {
   const { id, title, isCompleted } = todoItem;
   const [editedValue, setEditedValue] = useState(title);
+  const handleEditStart = (todoId) => {
+    setEditedValue(title);
+    handleEditTodo(todoId);
+  }
   const isEditing = (id) => {
     return editingTodoId === id;
   };
@@ -35,7 +39,7 @@ const TodoItem = ({
           onKeyDown={(e) => e.key === 'Enter' && handleSaveTodo(id , e.target.value)}
         />
       ) : (
-        <p className={`${isCompleted ? styles["todo--title-completed"] : ""}`} onDoubleClick={(e)=> handleEditTodo(id)}>
+        <p className={`${isCompleted ? styles["todo--title-completed"] : ""}`} onDoubleClick={(e)=> handleEditStart(id)}>
           {title}
         </p>
       )}
@@ -44,7 +48,6 @@ const TodoItem = ({
           className={styles["todo__editBtn"]}
           onClick={() => {
             handleSaveTodo(id, editedValue)
-            setEditedValue(editedValue);
           }}
         >
           Save
@@ -52,7 +55,7 @@ const TodoItem = ({
       ) : (
         <button
           className={styles["todo__editBtn"]}
-          onClick={() => handleEditTodo(id)}
+          onClick={() => handleEditStart(id)}
         >
           Edit
         </button>
