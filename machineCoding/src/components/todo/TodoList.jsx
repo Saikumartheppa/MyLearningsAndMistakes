@@ -20,7 +20,7 @@ const TodoItem = ({
   return (
     <div className={styles["todo__todoItem"]}>
       {!isEditing(id) && (
-        <inputß
+        <input
           type="checkbox"
           checked={isCompleted}
           className={styles["todo__checkBox"]}

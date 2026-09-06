@@ -6,6 +6,7 @@ const Todo = () => {
   const [todoList, setTodoList] = useState([]);
   const [editingTodoId, setEditingTodoId] = useState(null);
   const [filter, setFilter] = useState("All");
+  const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
   const getFilteredTodos = (filter) => {
     switch (filter) {
       case "Active":
@@ -61,12 +62,6 @@ const Todo = () => {
     );
     setEditingTodoId(null);
   };
-  const fetchNumberOfActiveTodos = () => {
-    const activeTodos = todoList?.reduce((acc, todo) => {
-      return !todo?.isCompleted ? acc + 1 : acc;
-    }, 0);
-    return activeTodos;
-  };
   return (
     <div className={styles["todo"]}>
       <h1>Todo App</h1>
@@ -78,7 +73,7 @@ const Todo = () => {
       <div className={styles["todo__filter-container"]}>
         <TodoFilters appliedFilter={filter} setFilter={setFilter} />
       </div>
-      <span>Active Todo's : {fetchNumberOfActiveTodos()}</span>
+      <span>Active Todos : {activeTodosCount}</span>
       <TodoList
         todoList={filteredTodos}
         handleCheckboxClick={handleCheckboxClick}
