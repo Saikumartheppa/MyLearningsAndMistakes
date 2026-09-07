@@ -41,3 +41,4 @@ export const TABS = [
 ]
 export const OTP_INPUT_DIGITS = 6;
 export const TODO_FILTER_BUTTONS = ['All' , 'Active' , 'Completed'];
+export const TODOS_STORAGE_KEY = 'todos';

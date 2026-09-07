@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TodoInput, TodoList, TodoFilters } from "../todo";
+import { TODOS_STORAGE_KEY as todoKey } from "../constants";
 import styles from "./style.module.scss";
 const Todo = () => {
   const [todoInputField, setTodoInputField] = useState("");
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState(() =>
+    parseLocalStorageTodos("todoKey"),
+  );
   const [editingTodoId, setEditingTodoId] = useState(null);
   const [filter, setFilter] = useState("All");
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
+  function parseLocalStorageTodos (key)  {
+    try {
+      let storedTodos = localStorage.getItem(key);
+      return storedTodos ? JSON.parse(storedTodos) : [];
+    } catch (err) {
+      console.error(err.message);
+      return [];
+    }
+  };
   const getFilteredTodos = (filter) => {
     switch (filter) {
       case "Active":
@@ -62,6 +74,9 @@ const Todo = () => {
     );
     setEditingTodoId(null);
   };
+  useEffect(() => {
+    localStorage.setItem("todoKey", JSON.stringify(todoList));
+  }, [todoList]);
   return (
     <div className={styles["todo"]}>
       <h1>Todo App</h1>
