@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { TodoInput, TodoList, TodoFilters } from "../todo";
+import { TodoInput, TodoList, TodoFilters, TodoSearch } from "../todo";
 import { TODOS_STORAGE_KEY as todoKey } from "../constants";
 import styles from "./style.module.scss";
 const Todo = () => {
   const [todoInputField, setTodoInputField] = useState("");
   const [todoList, setTodoList] = useState(() =>
-    parseLocalStorageTodos("todoKey"),
+    parseLocalStorageTodos(todoKey),
   );
   const [editingTodoId, setEditingTodoId] = useState(null);
   const [filter, setFilter] = useState("All");
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
-  function parseLocalStorageTodos (key)  {
+  function parseLocalStorageTodos(key) {
     try {
       let storedTodos = localStorage.getItem(key);
       return storedTodos ? JSON.parse(storedTodos) : [];
@@ -18,18 +20,27 @@ const Todo = () => {
       console.error(err.message);
       return [];
     }
-  };
-  const getFilteredTodos = (filter) => {
+  }
+  const getFilteredTodos = () => {
+    let todos = [...todoList];
     switch (filter) {
       case "Active":
-        return todoList.filter((todo) => !todo?.isCompleted);
+        todos = todoList.filter((todo) => !todo?.isCompleted);
+        break;
       case "Completed":
-        return todoList.filter((todo) => todo?.isCompleted);
+        todos = todoList.filter((todo) => todo?.isCompleted);
+        break;
       default:
-        return todoList;
+        break;
     }
+    if (debouncedSearchText) {
+      todos = todos.filter((todo) =>
+        todo.title.toLowerCase().includes(debouncedSearchText),
+      );
+    }
+    return todos;
   };
-  const filteredTodos = getFilteredTodos(filter);
+  const filteredTodos = getFilteredTodos();
   const handleInputField = (value) => {
     setTodoInputField(value);
   };
@@ -75,8 +86,16 @@ const Todo = () => {
     setEditingTodoId(null);
   };
   useEffect(() => {
-    localStorage.setItem("todoKey", JSON.stringify(todoList));
+    localStorage.setItem(todoKey, JSON.stringify(todoList));
   }, [todoList]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchText(searchText.trim().toLowerCase());
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchText]);
   return (
     <div className={styles["todo"]}>
       <h1>Todo App</h1>
@@ -85,6 +104,7 @@ const Todo = () => {
         handleInputField={handleInputField}
         handleAddTodoItem={handleAddTodoItem}
       />
+      <TodoSearch searchText={searchText} setSearchText={setSearchText} />
       <div className={styles["todo__filter-container"]}>
         <TodoFilters appliedFilter={filter} setFilter={setFilter} />
       </div>
