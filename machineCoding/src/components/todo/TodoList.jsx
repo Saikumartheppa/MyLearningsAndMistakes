@@ -7,7 +7,9 @@ const TodoItem = ({
   editingTodoId,
   handleEditTodo,
   handleCancelTodo,
-  handleSaveTodo
+  handleSaveTodo,
+  selectedTodoIds,
+  handleSelectTodo
 }) => {
   const { id, title, isCompleted } = todoItem;
   const [editedValue, setEditedValue] = useState(title);
@@ -21,6 +23,14 @@ const TodoItem = ({
   };
   return (
     <div className={styles["todo__todoItem"]}>
+      {!isEditing && (
+        <input
+          type="checkbox"
+          checked={selectedTodoIds.has(id)}
+          className={styles["todo__checkBox"]}
+          onChange={() => handleSelectTodo(id)}
+        />
+      )}
       {!isEditing && (
         <input
           type="checkbox"
@@ -87,7 +97,9 @@ const TodoList = (props) => {
     editingTodoId,
     handleEditTodo,
     handleCancelTodo,
-   handleSaveTodo
+   handleSaveTodo,
+   selectedTodoIds,
+   handleSelectTodo
   } = props;
   return (
     <div className={styles["todo__todoList"]}>
@@ -102,6 +114,8 @@ const TodoList = (props) => {
             handleEditTodo={handleEditTodo}
             handleCancelTodo={handleCancelTodo}
             handleSaveTodo={handleSaveTodo}
+            selectedTodoIds={selectedTodoIds}
+            handleSelectTodo={handleSelectTodo}
           />
         );
       })}

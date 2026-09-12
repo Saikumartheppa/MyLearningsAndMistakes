@@ -11,7 +11,12 @@ const Todo = () => {
   const [filter, setFilter] = useState("All");
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
+  const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
+  const getBulkCompleteCta =
+    todoList.length && !todoList.filter((todo) => !todo.isCompleted).length
+      ? "Mark all InComplete"
+      : "Mark all completed";
   function parseLocalStorageTodos(key) {
     try {
       let storedTodos = localStorage.getItem(key);
@@ -25,10 +30,10 @@ const Todo = () => {
     let todos = [...todoList];
     switch (filter) {
       case "Active":
-        todos = todoList.filter((todo) => !todo?.isCompleted);
+        todos = todos.filter((todo) => !todo?.isCompleted);
         break;
       case "Completed":
-        todos = todoList.filter((todo) => todo?.isCompleted);
+        todos = todos.filter((todo) => todo?.isCompleted);
         break;
       default:
         break;
@@ -66,6 +71,11 @@ const Todo = () => {
   };
   const handleDeleteTodo = (todoId) => {
     setTodoList((prevList) => prevList.filter((todo) => todo.id !== todoId));
+    setSelectedTodoIds((prevSet) => {
+      const newSet = new Set(prevSet);
+      newSet.delete(todoId);
+      return newSet;
+    });
   };
   const handleEditTodo = (toBeEditedTodoId) => {
     setEditingTodoId(toBeEditedTodoId);
@@ -84,6 +94,24 @@ const Todo = () => {
       ),
     );
     setEditingTodoId(null);
+  };
+  const handleSelectTodo = (todoId) => {
+    setSelectedTodoIds((prevSet) => {
+      const newSet = new Set(prevSet);
+      newSet.has(todoId) ? newSet.delete(todoId) : newSet.add(todoId);
+      return newSet;
+    });
+  };
+  const handleBulkDelete = () => {
+    setTodoList((prevList) =>
+      prevList.filter((todo) => !selectedTodoIds.has(todo.id)),
+    );
+    setSelectedTodoIds(new Set());
+  };
+  const handleBulkToggle = () => {
+    setTodoList((prevList) =>
+      prevList.map((todo) => ({ ...todo, isCompleted: !todo.isCompleted })),
+    );
   };
   useEffect(() => {
     localStorage.setItem(todoKey, JSON.stringify(todoList));
@@ -109,6 +137,23 @@ const Todo = () => {
         <TodoFilters appliedFilter={filter} setFilter={setFilter} />
       </div>
       <span>Active Todos : {activeTodosCount}</span>
+      <div>
+        <button
+          className={`${selectedTodoIds.size > 0 ? styles["todo__bulk-deleteBtn"] : styles["todo__bulk-deleteBtn--disabled"]}`}
+          onClick={handleBulkDelete}
+          disabled={selectedTodoIds.size === 0}
+        >
+          Delete Selected
+        </button>
+        <button
+          className={`${todoList.length > 0 ? styles["todo__mark-allBtn"] : styles["todo__bulk-deleteBtn--disabled"]}`}
+          onClick={handleBulkToggle}
+          disabled={todoList.length === 0}
+        >
+          {getBulkCompleteCta}
+        </button>
+        <span>Selected Todos : {selectedTodoIds.size}</span>
+      </div>
       <TodoList
         todoList={filteredTodos}
         handleCheckboxClick={handleCheckboxClick}
@@ -117,6 +162,8 @@ const Todo = () => {
         handleEditTodo={handleEditTodo}
         handleCancelTodo={handleCancelTodo}
         handleSaveTodo={handleSaveTodo}
+        selectedTodoIds={selectedTodoIds}
+        handleSelectTodo={handleSelectTodo}
       />
     </div>
   );

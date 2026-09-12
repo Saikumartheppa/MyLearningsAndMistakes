@@ -37,7 +37,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin: 0px 12px;
+    margin: 10px 12px;
   }
   &__todoList {
     height: 30vh;
@@ -56,7 +56,9 @@
   }
   &--deleteBtn,
   &__editBtn,
-  &--filterBtn {
+  &--filterBtn,
+  &__mark-allBtn,
+  &__bulk-deleteBtn {
     padding: 8px 26px;
     border-radius: 18px;
     border: 1px solid black;
@@ -67,15 +69,29 @@
       transition: all 0.2s ease-in-out;
     }
   }
+  &__mark-allBtn,
+  &__bulk-deleteBtn {
+    margin-right: 10px;
+  }
+  &__bulk-deleteBtn {
+    &--disabled {
+      margin-right: 10px;
+      border: 1px solid whitesmoke;
+      padding: 8px 26px;
+      border-radius: 18px;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+  }
   &--appliedFilter {
-      background-color: black;
-      color: white;
-      transition: all 0.2s ease-in-out;
+    background-color: black;
+    color: white;
+    transition: all 0.2s ease-in-out;
   }
   &--title-completed {
     text-decoration: line-through;
   }
-  &__search-container{
+  &__search-container {
     margin-bottom: 8px;
   }
 }
