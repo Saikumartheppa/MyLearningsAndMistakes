@@ -32,7 +32,8 @@
       transition: all 0.2s ease-in-out;
     }
   }
-  &__filter-container {
+  &__filter-container,
+  &__undo-container {
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -58,7 +59,8 @@
   &__editBtn,
   &--filterBtn,
   &__mark-allBtn,
-  &__bulk-deleteBtn {
+  &__bulk-deleteBtn,
+  &__undoBtn {
     padding: 8px 26px;
     border-radius: 18px;
     border: 1px solid black;

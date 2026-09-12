@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { TodoInput, TodoList, TodoFilters, TodoSearch } from "../todo";
 import { TODOS_STORAGE_KEY as todoKey } from "../constants";
 import styles from "./style.module.scss";
@@ -12,6 +12,9 @@ const Todo = () => {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
+  const deletedTodoInfoRef = useRef(null);
+  const undoTimerRef = useRef(null);
+  const [showUndo, setShowUndo] = useState(false);
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
   const getBulkCompleteCta =
     todoList.length && !todoList.filter((todo) => !todo.isCompleted).length
@@ -69,13 +72,35 @@ const Todo = () => {
       ),
     );
   };
+  const startUndoTimer = () => {
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+    }
+    undoTimerRef.current = setTimeout(() => {
+      deletedTodoInfoRef.current = null;
+      undoTimerRef.current = null;
+      setShowUndo(false);
+    }, 5000);
+  };
   const handleDeleteTodo = (todoId) => {
-    setTodoList((prevList) => prevList.filter((todo) => todo.id !== todoId));
+    setTodoList((prevList) => {
+      const deletedIndex = prevList.findIndex((todo) => todo.id === todoId);
+      if (deletedIndex === -1) {
+        return prevList;
+      }
+      deletedTodoInfoRef.current = {
+        todo: prevList[deletedIndex],
+        position: deletedIndex,
+      };
+      return prevList.filter((todo) => todo.id !== todoId);
+    });
     setSelectedTodoIds((prevSet) => {
       const newSet = new Set(prevSet);
       newSet.delete(todoId);
       return newSet;
     });
+    setShowUndo(true);
+    startUndoTimer();
   };
   const handleEditTodo = (toBeEditedTodoId) => {
     setEditingTodoId(toBeEditedTodoId);
@@ -113,6 +138,18 @@ const Todo = () => {
       prevList.map((todo) => ({ ...todo, isCompleted: !todo.isCompleted })),
     );
   };
+  const handleUndoTodo = () => {
+    const { position, todo } = deletedTodoInfoRef.current;
+    setTodoList((prevList) => [
+      ...prevList.slice(0, position),
+      todo,
+      ...prevList.slice(position),
+    ]);
+    setShowUndo(false);
+    deletedTodoInfoRef.current = null;
+    clearTimeout(undoTimerRef.current);
+    undoTimerRef.current = null;
+  };
   useEffect(() => {
     localStorage.setItem(todoKey, JSON.stringify(todoList));
   }, [todoList]);
@@ -124,6 +161,15 @@ const Todo = () => {
       clearTimeout(timer);
     };
   }, [searchText]);
+  useEffect(() => {
+    return () => {
+        deletedTodoInfoRef.current = null;
+      if (undoTimerRef.current) {
+        clearTimeout(undoTimerRef.current);
+        undoTimerRef.current = null;
+      }
+    };
+  }, []);
   return (
     <div className={styles["todo"]}>
       <h1>Todo App</h1>
@@ -165,6 +211,14 @@ const Todo = () => {
         selectedTodoIds={selectedTodoIds}
         handleSelectTodo={handleSelectTodo}
       />
+      {showUndo && (
+        <div className={styles["todo__undo-container"]}>
+          <span>Todo Deleted</span>
+          <button className={styles["todo__undoBtn"]} onClick={handleUndoTodo}>
+            Undo
+          </button>
+        </div>
+      )}
     </div>
   );
 };
