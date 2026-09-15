@@ -6,8 +6,8 @@ const useRestaurantList = () => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    
-    const data = await fetch(RESTAURANT_LIST_API);
+  try {
+      const data = await fetch(RESTAURANT_LIST_API);
     const json = await data.json();
     // optional chaining
     setListOfRestuarants(
@@ -18,6 +18,9 @@ const useRestaurantList = () => {
         }
       })
     );
+  } catch (error) {
+    console.error("error", error)
+  }
   };
    
   return listOfRestuarants;

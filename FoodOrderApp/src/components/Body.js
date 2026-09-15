@@ -1,11 +1,11 @@
 import RestaurantCard, { withPromotedLabel } from "./RestaurantCard";
-import { useState, useEffect  , useContext} from "react";
+import { useState, useEffect  } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useRestaurantList from "../utils/useRestaurantList";
 import useOnlineStatus from "../utils/useOnlineStatus";
-import UserContext from "../utils/UserContext";
-import '../../style.css';
+// import UserContext from "../utils/UserContext";
+// import '../../style.css';
 const Body = () => {
   // useState returns an Array . this is same we've used destructuring.
   // const arr = useState(restaurantList);
@@ -27,7 +27,7 @@ const Body = () => {
       <h1>Looks like you're offline!! Please check your internet connection</h1>
     );
   }
-  const { loggedInUser , setUserName } = useContext(UserContext);
+  // const { loggedInUser , setUserName } = useContext(UserContext);
 
   // Conditional Rendering
   if (!listOfRestuarants?.length) {
@@ -40,6 +40,7 @@ const Body = () => {
           <input
             type="text"
             value={searchInput}
+            data-testid="searchInput"
             onChange={(e) => {
               setSearchInput(e.target.value);
             }}
@@ -74,8 +75,8 @@ const Body = () => {
         </button>
         <div className="userName">
           <label>UserName</label>
-          <input value={loggedInUser}
-          onChange={(e) => setUserName(e.target.value)}></input>
+          <input value={""}
+          onChange={(e) => {}}></input>
         </div>
       </div>
       <div className="restaurantContainer">
