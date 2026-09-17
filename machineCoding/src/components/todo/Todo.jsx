@@ -12,7 +12,7 @@ const Todo = () => {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
-  const deletedTodoInfoRef = useRef(null);
+  const deletedTodosInfoRef = useRef(null);
   const undoTimerRef = useRef(null);
   const [showUndo, setShowUndo] = useState(false);
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
@@ -77,23 +77,23 @@ const Todo = () => {
       clearTimeout(undoTimerRef.current);
     }
     undoTimerRef.current = setTimeout(() => {
-      deletedTodoInfoRef.current = null;
+      deletedTodosInfoRef.current = null;
       undoTimerRef.current = null;
       setShowUndo(false);
     }, 5000);
   };
   const handleDeleteTodo = (todoId) => {
-    setTodoList((prevList) => {
-      const deletedIndex = prevList.findIndex((todo) => todo.id === todoId);
-      if (deletedIndex === -1) {
-        return prevList;
-      }
-      deletedTodoInfoRef.current = {
-        todo: prevList[deletedIndex],
+    const deletedIndex = todoList.findIndex((todo) => todo.id === todoId);
+    if (deletedIndex === -1) {
+      return;
+    }
+    deletedTodosInfoRef.current = [
+      {
+        todo: todoList[deletedIndex],
         position: deletedIndex,
-      };
-      return prevList.filter((todo) => todo.id !== todoId);
-    });
+      },
+    ];
+    setTodoList((prevList) => prevList.filter((todo) => todo.id !== todoId));
     setSelectedTodoIds((prevSet) => {
       const newSet = new Set(prevSet);
       newSet.delete(todoId);
@@ -128,9 +128,18 @@ const Todo = () => {
     });
   };
   const handleBulkDelete = () => {
+    if (selectedTodoIds.size === 0) {
+      return;
+    }
+    const deletedTodos = todoList
+      .map((todo, index) => ({ todo, position: index }))
+      .filter(({ todo }) => selectedTodoIds.has(todo?.id));
+    deletedTodosInfoRef.current = deletedTodos;
     setTodoList((prevList) =>
       prevList.filter((todo) => !selectedTodoIds.has(todo.id)),
     );
+    setShowUndo(true);
+    startUndoTimer();
     setSelectedTodoIds(new Set());
   };
   const handleBulkToggle = () => {
@@ -139,14 +148,21 @@ const Todo = () => {
     );
   };
   const handleUndoTodo = () => {
-    const { position, todo } = deletedTodoInfoRef.current;
-    setTodoList((prevList) => [
-      ...prevList.slice(0, position),
-      todo,
-      ...prevList.slice(position),
-    ]);
+    const deletedTodosInfo = deletedTodosInfoRef.current;
+    if (!deletedTodosInfo) {
+      return;
+    }
+    const deletedTodos = [...deletedTodosInfo];
+    deletedTodos.sort((a, b) => a.position - b.position);
+    setTodoList((prevList) => {
+      const restoredList = [...prevList];
+      deletedTodos.forEach(({ todo, position }) => {
+        restoredList.splice(position, 0, todo);
+      });
+      return restoredList;
+    });
     setShowUndo(false);
-    deletedTodoInfoRef.current = null;
+    deletedTodosInfoRef.current = null;
     clearTimeout(undoTimerRef.current);
     undoTimerRef.current = null;
   };
@@ -163,7 +179,7 @@ const Todo = () => {
   }, [searchText]);
   useEffect(() => {
     return () => {
-        deletedTodoInfoRef.current = null;
+      deletedTodosInfoRef.current = null;
       if (undoTimerRef.current) {
         clearTimeout(undoTimerRef.current);
         undoTimerRef.current = null;
