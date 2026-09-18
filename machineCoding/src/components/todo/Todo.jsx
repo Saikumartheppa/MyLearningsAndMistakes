@@ -16,8 +16,9 @@ const Todo = () => {
   const undoTimerRef = useRef(null);
   const [showUndo, setShowUndo] = useState(false);
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
+  const shouldMarkAllCompleted = activeTodosCount > 0;
   const getBulkCompleteCta =
-    todoList.length && !todoList.filter((todo) => !todo.isCompleted).length
+    todoList.length && !shouldMarkAllCompleted
       ? "Mark all InComplete"
       : "Mark all completed";
   function parseLocalStorageTodos(key) {
@@ -144,7 +145,15 @@ const Todo = () => {
   };
   const handleBulkToggle = () => {
     setTodoList((prevList) =>
-      prevList.map((todo) => ({ ...todo, isCompleted: !todo.isCompleted })),
+      prevList.map((todo) => {
+        if (todo.isCompleted === shouldMarkAllCompleted) {
+          return todo;
+        }
+        return {
+          ...todo,
+          isCompleted: shouldMarkAllCompleted,
+        };
+      }),
     );
   };
   const handleUndoTodo = () => {
