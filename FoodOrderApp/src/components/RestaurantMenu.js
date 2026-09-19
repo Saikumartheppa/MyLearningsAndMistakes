@@ -3,10 +3,13 @@ import { useParams } from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
 import RestaurantCategory from "./RestaurantCategory";
 import { useState } from "react";
-import "../../style.css";
+import resInfoData from "../mocks/resInfoData.json"
+// import "../../style.css";
 const RestaurantMenu = () => {
   const { resId } = useParams();
-  const resInfo = useRestaurantMenu(resId);
+  const resInfo = resInfoData?.data;
+  console.log("res info", resInfo);
+  
   const [showIndex , setShowIndex] = useState(0);
   if (!resInfo) {
     return <Shimmer />;
