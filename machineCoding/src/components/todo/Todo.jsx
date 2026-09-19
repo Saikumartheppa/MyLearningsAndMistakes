@@ -15,6 +15,7 @@ const Todo = () => {
   const deletedTodosInfoRef = useRef(null);
   const undoTimerRef = useRef(null);
   const [showUndo, setShowUndo] = useState(false);
+  const draggedTodoIdRef = useRef(null);
   const activeTodosCount = todoList.filter((todo) => !todo.isCompleted).length;
   const shouldMarkAllCompleted = activeTodosCount > 0;
   const getBulkCompleteCta =
@@ -175,6 +176,42 @@ const Todo = () => {
     clearTimeout(undoTimerRef.current);
     undoTimerRef.current = null;
   };
+  const handleDragStart = (e, draggedTodoId) => {
+    draggedTodoIdRef.current = draggedTodoId;
+    e.dataTransfer.effectAllowed = "move";
+  };
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+  const handleDrop = (e, targetTodoId) => {
+    e.preventDefault();
+    const draggedTodoId = draggedTodoIdRef.current;
+    if (!draggedTodoId || draggedTodoId === targetTodoId) {
+      return;
+    }
+    setTodoList((prevList) => {
+      const getTodoPosition = (todoId) => {
+        return prevList.findIndex((todo) => todo.id === todoId);
+      };
+      const draggedTodoIndex = getTodoPosition(draggedTodoId);
+      const targetTodoIndex = getTodoPosition(targetTodoId);
+      if (targetTodoIndex === -1 || draggedTodoIndex === -1) {
+        return prevList;
+      }
+      const reorderedList = [...prevList];
+      const [draggedItem] = reorderedList.splice(draggedTodoIndex, 1);
+      const adjustedTargetIndex =
+        draggedTodoIndex < targetTodoIndex
+          ? targetTodoIndex - 1
+          : targetTodoIndex;
+      reorderedList.splice(adjustedTargetIndex, 0, draggedItem);
+      return reorderedList;
+    });
+
+  };
+  const handleDragEnd = () => {
+    draggedTodoIdRef.current = null;
+  }
   useEffect(() => {
     localStorage.setItem(todoKey, JSON.stringify(todoList));
   }, [todoList]);
@@ -235,6 +272,10 @@ const Todo = () => {
         handleSaveTodo={handleSaveTodo}
         selectedTodoIds={selectedTodoIds}
         handleSelectTodo={handleSelectTodo}
+        handleDragStart={handleDragStart}
+        handleDragOver={handleDragOver}
+        handleDrop={handleDrop}
+        handleDragEnd={handleDragEnd}
       />
       {showUndo && (
         <div className={styles["todo__undo-container"]}>

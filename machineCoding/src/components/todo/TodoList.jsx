@@ -9,20 +9,31 @@ const TodoItem = ({
   handleCancelTodo,
   handleSaveTodo,
   selectedTodoIds,
-  handleSelectTodo
+  handleSelectTodo,
+  handleDragStart,
+  handleDragOver,
+  handleDrop,
+  handleDragEnd
 }) => {
   const { id, title, isCompleted } = todoItem;
   const [editedValue, setEditedValue] = useState(title);
   const handleEditStart = () => {
     setEditedValue(title);
     handleEditTodo(id);
-  }
+  };
   const isEditing = editingTodoId === id;
   const handleEditedValue = (value) => {
     setEditedValue(value);
   };
   return (
-    <div className={styles["todo__todoItem"]}>
+    <div
+      className={styles["todo__todoItem"]}
+      draggable
+      onDragStart={(e) => handleDragStart(e , id)}
+      onDragOver={handleDragOver}
+      onDrop={(e) => handleDrop(e,id)}
+      onDragEnd={handleDragEnd}
+    >
       {!isEditing && (
         <input
           type="checkbox"
@@ -44,10 +55,15 @@ const TodoItem = ({
           className={styles["todo__input-field"]}
           value={editedValue}
           onChange={(e) => handleEditedValue(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSaveTodo(id , e.target.value)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && handleSaveTodo(id, e.target.value)
+          }
         />
       ) : (
-        <p className={`${isCompleted ? styles["todo--title-completed"] : ""}`} onDoubleClick={handleEditStart}>
+        <p
+          className={`${isCompleted ? styles["todo--title-completed"] : ""}`}
+          onDoubleClick={handleEditStart}
+        >
           {title}
         </p>
       )}
@@ -55,16 +71,13 @@ const TodoItem = ({
         <button
           className={styles["todo__editBtn"]}
           onClick={() => {
-            handleSaveTodo(id, editedValue)
+            handleSaveTodo(id, editedValue);
           }}
         >
           Save
         </button>
       ) : (
-        <button
-          className={styles["todo__editBtn"]}
-          onClick={handleEditStart}
-        >
+        <button className={styles["todo__editBtn"]} onClick={handleEditStart}>
           Edit
         </button>
       )}
@@ -97,9 +110,13 @@ const TodoList = (props) => {
     editingTodoId,
     handleEditTodo,
     handleCancelTodo,
-   handleSaveTodo,
-   selectedTodoIds,
-   handleSelectTodo
+    handleSaveTodo,
+    selectedTodoIds,
+    handleSelectTodo,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd
   } = props;
   return (
     <div className={styles["todo__todoList"]}>
@@ -116,6 +133,10 @@ const TodoList = (props) => {
             handleSaveTodo={handleSaveTodo}
             selectedTodoIds={selectedTodoIds}
             handleSelectTodo={handleSelectTodo}
+            handleDragStart={handleDragStart}
+            handleDragOver={handleDragOver}
+            handleDrop={handleDrop}
+            handleDragEnd={handleDragEnd}
           />
         );
       })}
