@@ -6,8 +6,8 @@ function App() {
     // <ChipsInput/>
     // <AutoComplete />
     // <OTPInput otpDigits={OTP_INPUT_DIGITS}/>
-    // <Todo/>
-    <DragToHighlightGrid/>
+    <Todo/>
+    // <DragToHighlightGrid/>
   )
 }
 export default App;

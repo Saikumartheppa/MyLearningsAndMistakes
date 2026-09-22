@@ -61,7 +61,7 @@ const TodoItem = ({
         />
       ) : (
         <p
-          className={`${isCompleted ? styles["todo--title-completed"] : ""}`}
+          className={`${styles["todo__title"]} ${isCompleted ? styles["todo--title-completed"] : ""}`}
           onDoubleClick={handleEditStart}
         >
           {title}

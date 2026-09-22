@@ -245,7 +245,7 @@ const Todo = () => {
         <TodoFilters appliedFilter={filter} setFilter={setFilter} />
       </div>
       <span>Active Todos : {activeTodosCount}</span>
-      <div>
+      <div className={styles["todo__bulk-actions"]}>
         <button
           className={`${selectedTodoIds.size > 0 ? styles["todo__bulk-deleteBtn"] : styles["todo__bulk-deleteBtn--disabled"]}`}
           onClick={handleBulkDelete}
