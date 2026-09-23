@@ -1,0 +1,11 @@
+.drag{
+    width: 100%;
+    max-width: 720px;
+    margin: 24px auto;
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+    &__square-box{
+        border: 1px solid black;
+    }
+}
