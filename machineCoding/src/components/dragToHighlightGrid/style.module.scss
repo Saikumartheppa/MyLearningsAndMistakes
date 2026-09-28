@@ -6,7 +6,11 @@
     grid-template-columns: repeat(8, 50px);
     grid-template-rows: repeat(8, 50px);
     &__square-box{
+        text-align: center;
+        align-content: center;
+        font-size: large;
         border: 1px solid black;
+        color: white;
     }
     &--square-bg{
         background-color: red;

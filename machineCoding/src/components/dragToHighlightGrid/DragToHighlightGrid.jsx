@@ -1,39 +1,43 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { SquareBox } from "../dragToHighlightGrid";
 import { ROWS as rows, COLUMNS as columns } from "../constants";
 import styles from "./style.module.scss";
 const DragToHighlightGrid = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [visitedCells , setVisitedCells] = useState(new Set());
-  const handleDragging = (row , column) => {
+  const [visitedCells, setVisitedCells] = useState(new Map());
+  const handleDragging = (row, column) => {
     setIsDragging(true);
     const coordinates = `${row}-${column}`;
-    setVisitedCells(new Set([coordinates]));
-  }
-  const handlePointerMove = (row , column) => {
-      setVisitedCells((prev) => {
-       const coordinates = `${row}-${column}`;
-        if(prev.has(coordinates)){
-            return prev;
-        }
-        const set = new Set(prev);
-        set.add(coordinates);
-        return set;
-     })
-  }
+    setVisitedCells(() => {
+      const map = new Map();
+      map.set(coordinates, 1);
+      return map;
+    });
+  };
+  const handlePointerMove = (row, column) => {
+    setVisitedCells((prev) => {
+      const coordinates = `${row}-${column}`;
+      if (prev.has(coordinates)) {
+        return prev;
+      }
+      const map = new Map(prev);
+      map.set(coordinates, map.size + 1);
+      return map;
+    });
+  };
   const handlePointerUp = () => {
     setIsDragging(false);
-  }
+  };
   useEffect(() => {
-  if (!isDragging) return;
-  const stopDragging = () => {
-    setIsDragging(false);
-  };
-  window.addEventListener("pointerup", stopDragging);
-  return () => {
-    window.removeEventListener("pointerup", stopDragging);
-  };
-}, [isDragging]);
+    if (!isDragging) return;
+    const stopDragging = () => {
+      setIsDragging(false);
+    };
+    window.addEventListener("pointerup", stopDragging);
+    return () => {
+      window.removeEventListener("pointerup", stopDragging);
+    };
+  }, [isDragging]);
   return (
     <div className={styles["drag"]}>
       {Array.from({ length: rows }).map((_, row) =>
@@ -47,6 +51,7 @@ const DragToHighlightGrid = () => {
             handleDragging={handleDragging}
             handlePointerMove={handlePointerMove}
             handlePointerUp={handlePointerUp}
+            visitedOrder={visitedCells.get(`${row}-${column}`)}
           />
         )),
       )}
