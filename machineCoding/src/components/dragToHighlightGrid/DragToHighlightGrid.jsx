@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { SquareBox } from "../dragToHighlightGrid";
 import { ROWS as rows, COLUMNS as columns } from "../constants";
 import styles from "./style.module.scss";
@@ -24,6 +24,16 @@ const DragToHighlightGrid = () => {
   const handlePointerUp = () => {
     setIsDragging(false);
   }
+  useEffect(() => {
+  if (!isDragging) return;
+  const stopDragging = () => {
+    setIsDragging(false);
+  };
+  window.addEventListener("pointerup", stopDragging);
+  return () => {
+    window.removeEventListener("pointerup", stopDragging);
+  };
+}, [isDragging]);
   return (
     <div className={styles["drag"]}>
       {Array.from({ length: rows }).map((_, row) =>
