@@ -1,18 +1,44 @@
-.drag{
-    width: 100%;
-    max-width: 720px;
-    margin: 24px auto;
-    display: grid;
-    grid-template-columns: repeat(8, 50px);
-    grid-template-rows: repeat(8, 50px);
-    &__square-box{
-        text-align: center;
-        align-content: center;
-        font-size: large;
-        border: 1px solid black;
-        color: white;
+.heading {
+  text-align: center;
+  margin: 12px auto;
+}
+.drag {
+  width: 100%;
+  max-width: 720px;
+  margin: 24px auto;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  &__square-box {
+    text-align: center;
+    align-content: center;
+    font-size: large;
+    border: 1px solid black;
+    color: white;
+  }
+  &--square-bg {
+    background-color: red;
+  }
+}
+.clear-grid-cta-container {
+  text-align: center;
+  .clear-grid-cta {
+    padding: 12px 24px;
+    border: 1px solid beige;
+    border-radius: 20px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    &:hover{
+        background-color: rgb(213, 203, 203);
+        color: black;
     }
-    &--square-bg{
-        background-color: red;
+    &--disabled{
+        pointer-events: none;
+        opacity: 0.4;
+        background-color:  rgb(220, 215, 215);
+        color: rgb(50, 48, 48);
     }
+  }
 }

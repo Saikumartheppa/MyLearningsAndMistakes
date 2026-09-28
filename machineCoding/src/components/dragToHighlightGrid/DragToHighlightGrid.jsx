@@ -25,9 +25,10 @@ const DragToHighlightGrid = () => {
       return map;
     });
   };
-  const handlePointerUp = () => {
+  const handleClearGrid = () => {
     setIsDragging(false);
-  };
+    setVisitedCells(new Map());
+  }
   useEffect(() => {
     if (!isDragging) return;
     const stopDragging = () => {
@@ -39,23 +40,34 @@ const DragToHighlightGrid = () => {
     };
   }, [isDragging]);
   return (
-    <div className={styles["drag"]}>
-      {Array.from({ length: rows }).map((_, row) =>
-        Array.from({ length: columns }).map((_, column) => (
-          <SquareBox
-            key={`${row}-${column}`}
-            row={row}
-            column={column}
-            isVisited={visitedCells.has(`${row}-${column}`)}
-            isDragging={isDragging}
-            handleDragging={handleDragging}
-            handlePointerMove={handlePointerMove}
-            handlePointerUp={handlePointerUp}
-            visitedOrder={visitedCells.get(`${row}-${column}`)}
-          />
-        )),
-      )}
-    </div>
+    <>
+      <h2 className={styles["heading"]}>Drag to Highlight the Grid</h2>
+      <div className={styles["drag"]}>
+        {Array.from({ length: rows }).map((_, row) =>
+          Array.from({ length: columns }).map((_, column) => (
+            <SquareBox
+              key={`${row}-${column}`}
+              row={row}
+              column={column}
+              isVisited={visitedCells.has(`${row}-${column}`)}
+              isDragging={isDragging}
+              handleDragging={handleDragging}
+              handlePointerMove={handlePointerMove}
+              visitedOrder={visitedCells.get(`${row}-${column}`)}
+            />
+          )),
+        )}
+      </div>
+      <div className={styles["clear-grid-cta-container"]}>
+        <button
+          className={`${styles["clear-grid-cta"]} ${visitedCells.size <= 0 ? styles["clear-grid-cta--disabled"] : ""}`}
+          disabled={visitedCells.size === 0}
+          onClick={handleClearGrid}
+        >
+          Clear grid
+        </button>
+      </div>
+    </>
   );
 };
 export default DragToHighlightGrid;
