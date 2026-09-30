@@ -1,4 +1,4 @@
-import { Accordian , ACCORDIAN_ITEMS , TabForm , ChipsInput , AutoComplete  , OTPInput , OTP_INPUT_DIGITS , Todo , DragToHighlightGrid} from "./components";
+import { Accordian , ACCORDIAN_ITEMS , TabForm , ChipsInput , AutoComplete  , OTPInput , OTP_INPUT_DIGITS , Todo , DragToHighlightGrid ,Pagination} from "./components";
 function App() {
   return (
     // <Accordian items={ACCORDIAN_ITEMS} allowMultipleItemsOpen={true} defaultOpenItems={[1,2]}/>
@@ -7,7 +7,8 @@ function App() {
     // <AutoComplete />
     // <OTPInput otpDigits={OTP_INPUT_DIGITS}/>
     // <Todo/>
-    <DragToHighlightGrid/>
+    // <DragToHighlightGrid/>
+    <Pagination/>
   )
 }
 export default App;
