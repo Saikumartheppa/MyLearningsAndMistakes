@@ -1,0 +1,27 @@
+.pagination {
+  margin: 10px;
+  &__heading {
+    text-align: center;
+  }
+  &__products-container{
+    display: grid;
+    grid-template-columns: repeat(4 , 0.8fr);
+    grid-template-rows: auto;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  &__product-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: fit-content;
+    border: 1px solid black;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  &__product-img{
+    height: 200px;
+    width: 200px;
+  }
+}

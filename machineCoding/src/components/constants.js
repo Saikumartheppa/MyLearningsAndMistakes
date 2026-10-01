@@ -44,3 +44,4 @@ export const TODO_FILTER_BUTTONS = ['All' , 'Active' , 'Completed'];
 export const TODOS_STORAGE_KEY = 'todos';
 export const ROWS = 8;
 export const COLUMNS = 8;
+export const PAGINATION_API = 'https://dummyjson.com/products?limit=500';
