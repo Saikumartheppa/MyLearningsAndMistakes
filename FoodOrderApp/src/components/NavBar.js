@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import UserContext from "../utils/UserContext";
 import { useSelector } from "react-redux";
-import "../../style.css";
 
 const NavBar = () => {
   const {loggedInUser} = useContext(UserContext);
   const cartItems = useSelector((store) => store.cart.items);
   console.log(cartItems);
   return (
-    <div className="nav">
+    <div className="nav" data-testid="nav">
       <div className="navItems">
         <div className="logo">
           <img src={LOGO_URL} />
