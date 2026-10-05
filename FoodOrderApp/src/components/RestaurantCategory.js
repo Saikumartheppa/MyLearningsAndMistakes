@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ItemList from "./ItemList";
-import "../../style.css";
+// import "../../style.css";
 const RestaurantCategory = ({data , showItems , setShowIndex}) => {
   const handleClick = () =>{
     setShowIndex();

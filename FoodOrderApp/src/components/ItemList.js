@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { IMAGE_URL } from "../utils/constants";
 import { addItem, removeItem } from "../utils/cartSlice";
-import "../../style.css";
+// import "../../style.css";
 const ItemList = ({ items }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((store) => store.cart.items);

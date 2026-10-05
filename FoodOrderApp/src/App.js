@@ -9,7 +9,7 @@ import RestaurantMenu from "./components/RestaurantMenu";
 import { lazy, Suspense } from "react";
 import { useState, useEffect } from "react";
 import UserContext from "./utils/UserContext";
-import {Provider} from "react-redux";
+import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Cart from "./components/Cart";
 // Chunking
@@ -19,23 +19,25 @@ import Cart from "./components/Cart";
 // on demand loading
 // dynamix imoprt
 const About = lazy(() => import("./components/About"));
+
 const AppLayOut = () => {
   console.log("App is Running");
-  const[userName , setUserName] = useState(null);
+  const [userName, setUserName] = useState(null);
   useEffect(() => {
     const data = {
-      name : "John Doe"
-    }
+      name: "John Doe",
+    };
     setUserName(data.name);
-  }, [])
+  }, []);
+  
   return (
-    <Provider store={appStore} >
-   <UserContext.Provider value={{loggedInUser: userName , setUserName}}>
-    <div className="appContainer">
-      <NavBar />
-      <Outlet />
-    </div>
-    </UserContext.Provider>
+    <Provider store={appStore}>
+      <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+        <div className="appContainer">
+          <NavBar />
+          <Outlet />
+        </div>
+      </UserContext.Provider>
     </Provider>
   );
 };
